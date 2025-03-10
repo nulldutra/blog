@@ -4,6 +4,13 @@ from django.db import models
 from django.utils import timezone
 
 
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return (
+            super().get_queryset().filter(status=Post.Status.PUBLISHED)
+        )
+
+
 class Post(models.Model):
     """
         We have defined the enumeration class Status by subclassing models.TextChoices
@@ -31,6 +38,9 @@ class Post(models.Model):
         default=Status.DRAFT
     )
     
+    objects = models.Manager() # The default manager
+    published = PublishedManager() # Our custom manager
+
     """
     Tip: Utilizing the auto_now_add and auto_now datetime fields in your Django models is highly
     beneficial for tracking the creation and last modification times of objects.
